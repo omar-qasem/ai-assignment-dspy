@@ -1,0 +1,20 @@
+[
+    {
+        "question": "Total revenue from the 'Beverages' category during 'Summer Beverages 1997' dates.",
+        "db_schema": "Table: Orders...\nTable: Products...\nTable: Categories...",
+        "constraints": "Date range: 1997-06-01 to 1997-06-30. Category: Beverages. Revenue formula: SUM(UnitPrice*Quantity*(1-Discount)).",
+        "sql_query": "SELECT SUM(T2.UnitPrice * T2.Quantity * (1 - T2.Discount)) FROM Orders AS T1 INNER JOIN 'Order Details' AS T2 ON T1.OrderID = T2.OrderID INNER JOIN Products AS T3 ON T2.ProductID = T3.ProductID INNER JOIN Categories AS T4 ON T3.CategoryID = T4.CategoryID WHERE T4.CategoryName = 'Beverages' AND T1.OrderDate BETWEEN '1997-06-01' AND '1997-06-30';"
+    },
+    {
+        "question": "Top 3 products by total revenue all-time.",
+        "db_schema": "Table: Products...\nTable: 'Order Details'...",
+        "constraints": "Revenue formula: SUM(UnitPrice*Quantity*(1-Discount)). Top 3.",
+        "sql_query": "SELECT T1.ProductName, SUM(T2.UnitPrice * T2.Quantity * (1 - T2.Discount)) AS Revenue FROM Products AS T1 INNER JOIN 'Order Details' AS T2 ON T1.ProductID = T2.ProductID GROUP BY T1.ProductName ORDER BY Revenue DESC LIMIT 3;"
+    },
+    {
+        "question": "Who was the top customer by gross margin in 1997? Assume CostOfGoods is approximated by 70% of UnitPrice.",
+        "db_schema": "Table: Customers...\nTable: Orders...\nTable: 'Order Details'...",
+        "constraints": "Year: 1997. Gross Margin formula: SUM((UnitPrice - (UnitPrice * 0.7)) * Quantity * (1 - Discount)).",
+        "sql_query": "SELECT T1.CompanyName, SUM((T3.UnitPrice - (T3.UnitPrice * 0.7)) * T3.Quantity * (1 - T3.Discount)) AS GrossMargin FROM Customers AS T1 INNER JOIN Orders AS T2 ON T1.CustomerID = T2.CustomerID INNER JOIN 'Order Details' AS T3 ON T2.OrderID = T3.OrderID WHERE T2.OrderDate BETWEEN '1997-01-01' AND '1997-12-31' GROUP BY T1.CompanyName ORDER BY GrossMargin DESC LIMIT 1;"
+    }
+]
